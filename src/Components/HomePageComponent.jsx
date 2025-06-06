@@ -152,7 +152,7 @@ const HomepageComponent = ({ movieTitles = [], gradientColor = "black" }) => {
       >
         <div className="absolute inset-0 z-30">
           {/* Dark overlay background */}
-          <div className="absolute inset-0 bg-black opacity-85"></div>
+          <div className="absolute inset-0 bg-black opacity-80"></div>
 
           {/* Content container - now separate from the overlay */}
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-white p-4">

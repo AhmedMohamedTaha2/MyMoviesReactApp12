@@ -18,6 +18,8 @@ import MovieDetailModal from "./Components/MovieDetailModal";
 import FooterComponent from "./Components/FooterComponent";
 import HomepageComponent from "./Components/HomePageComponent";
 import AboutComponent from "./Components/AboutComponent";
+import StarRatingComponent from "./Components/StarRatingComponent";
+import WatchedMoviesComponent from "./Components/WatchedMoviesComponent";
 
 function AppContent() {
   const apiKey = "f5e82cc2";
@@ -28,10 +30,14 @@ function AppContent() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
+  const [watchedMovies, setWatchedMovies] = useState([]);
+
   const navigate = useNavigate();
 
   const fetchMovies = async (pageNumber) => {
-    // لو مفيش كلمة بحث، متعملش أي طلب للـ API
+    // Skip API call if search term is empty
     if (!searchTerm) {
       setMovies([]);
       setTotalResults(0);
@@ -46,7 +52,7 @@ function AppContent() {
 
       if (response.data.Response === "True") {
         setMovies(response.data.Search || []);
-        // الـ totalResults بيجي بعدد النتائج الكلية، لازم نقسمه على 10 (عدد النتائج في الصفحة) عشان نجيب عدد الصفحات
+        // Calculate total pages from results
         setTotalResults(Math.ceil(parseInt(response.data.totalResults) / 10));
       } else {
         setMovies([]);
@@ -61,48 +67,59 @@ function AppContent() {
     }
   };
 
-  // useEffect لـ debouncing الـ searchTerm
+  // Handle search term debouncing
   useEffect(() => {
-    // كل ما الـ searchTerm يتغير، نرجع الصفحة للأولى
-    // ده بيضمن إن أي بحث جديد يبدأ من أول صفحة
     setPage(1);
 
     const handler = setTimeout(() => {
-      // لو الـ searchTerm فاضي، متستدعيش fetchMovies
-      // الـ useEffect التاني (بتاع الـ page و searchTerm) هيتعامل مع حالة الـ searchTerm الفاضي
       if (searchTerm) {
         navigate("/search");
       }
     }, 500);
+
+    // Return to home page if search is empty (except when on watched page)
+    if (!searchTerm && window.location.pathname !== "/watched") {
+      navigate("/");
+    }
 
     return () => {
       clearTimeout(handler);
     };
   }, [searchTerm, navigate]);
 
-  // useEffect لجلب الأفلام بناءً على الـ searchTerm و الـ page
-  // ده الـ useEffect اللي هيستدعي fetchMovies فعليًا
+  // Fetch movies when search term or page changes
   useEffect(() => {
-    // عشان نتجنب استدعاء API لما الـ searchTerm فاضي في البداية
     if (searchTerm) {
       fetchMovies(page);
     } else {
-      // لو الـ searchTerm فاضي، هنفضي قائمة الأفلام والـ totalResults
       setMovies([]);
       setTotalResults(0);
     }
-  }, [searchTerm, page]); // هيستدعي fetchMovies كل ما الـ searchTerm أو الـ page يتغيروا
+  }, [searchTerm, page]);
 
-  // Modify your search handler
   const handleSearch = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
   };
 
+  // load watched movies from local state
+  useEffect(() =>
+    () => {
+      const storedMovies = localStorage.getItem("watchedMovies");
+      if (storedMovies) {
+        setWatchedMovies(JSON.parse(storedMovies));
+      }
+    }
+  , []);
+  
+
   return (
     <div className="w-full min-h-screen bg-gray-950 ">
       <NavbarComponent setSearchTerm={setSearchTerm}>
-
-        <SearchComponent searchTerm={searchTerm} setSearchTerm={handleSearch} settingSearchTerm={setSearchTerm} />
+        <SearchComponent
+          searchTerm={searchTerm}
+          setSearchTerm={handleSearch}
+          settingSearchTerm={setSearchTerm}
+        />
       </NavbarComponent>
 
       <Routes>
@@ -133,13 +150,32 @@ function AppContent() {
             </ContainerComponent>
           }
         />
+
+        <Route
+          path="/watched"
+          element={
+            <WatchedMoviesComponent
+              watchedMovies={watchedMovies}
+              setWatchedMovies={setWatchedMovies}
+            />
+          }
+        />
       </Routes>
 
       <MovieDetailModal
         movie={selectedMovie}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-      />
+      >
+        <StarRatingComponent
+          selectedMovie={selectedMovie}
+          hoverRating={hoverRating}
+          setHoverRating={setHoverRating}
+          userRating={userRating}
+          setUserRating={setUserRating}
+          setWatchedMovies={setWatchedMovies}
+        />
+      </MovieDetailModal>
       <FooterComponent />
     </div>
   );

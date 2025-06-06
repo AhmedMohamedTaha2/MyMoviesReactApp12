@@ -1,11 +1,12 @@
 // Components/MovieDetailModal.jsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import StarRatingComponent from './StarRatingComponent';
 
-export default function MovieDetailModal({ movie, isOpen, onClose }) {
-  const [userRating, setUserRating] = useState(0);
-  const [isWatched, setIsWatched] = useState(false);
-  const [hoverRating, setHoverRating] = useState(0); // Add this new state
+export default function MovieDetailModal({ movie, isOpen, onClose  , children}) {
+  // const [userRating, setUserRating] = useState(0);
+  // const [isWatched, setIsWatched] = useState(false);
+  // const [hoverRating, setHoverRating] = useState(0); // Add this new state
 
   // Only render AnimatePresence if isOpen is true, otherwise it will try to animate unmounted components
   if (!isOpen && !movie) return null; // Added !movie check for safety
@@ -73,64 +74,7 @@ export default function MovieDetailModal({ movie, isOpen, onClose }) {
                   className="w-full h-auto rounded-lg shadow-lg object-cover border border-white/20" // Added subtle border
                   loading="lazy"
                 />
-
-                {/* Add User Interaction Section below poster */}
-                <div className="mt-4 space-y-5">
-                  <div className="bg-slate-700/50 p-4 rounded-lg flex flex-col gap-4">
-                    <label htmlFor="watched" className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        id="watched"
-                        checked={isWatched}
-                        onChange={(e) => setIsWatched(e.target.checked)}
-                        className="w-5 h-5 rounded text-sky-500 focus:ring-offset-0 focus:ring-sky-500 bg-slate-600 border-slate-500"
-                      />
-                      <span className="text-slate-100">Watched</span>
-                    </label>
-
-                    <div className="flex flex-col gap-2">
-                      <span className={`text-slate-400 ${!isWatched && 'opacity-50'}`}>
-                        Your Rating: {userRating > 0 ? `${userRating} of 5` : 'Not rated'}
-                      </span>
-                      <div className="flex justify-center gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            onClick={() => {
-                              if (isWatched) {
-                                setUserRating(star === userRating ? 0 : star);
-                              }
-                            }}
-                            onMouseEnter={() => isWatched && setHoverRating(star)}
-                            onMouseLeave={() => isWatched && setHoverRating(0)}
-                            className={`text-2xl transition-all duration-200 transform 
-                              ${isWatched ? 'hover:scale-110' : 'cursor-not-allowed opacity-50'}
-                              ${
-                                (hoverRating ? star <= hoverRating : star <= userRating) && isWatched
-                                  ? 'text-yellow-400'
-                                  : 'text-slate-600'
-                              }
-                            `}
-                            disabled={!isWatched}
-                            aria-label={`Rate ${star} of 5 stars`}
-                          >
-                            ★
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <a
-                      href={`https://www.google.com/search?q=watch+${encodeURIComponent(movie.Title)}+movie+online`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-full px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
-                    >
-                      <span className="mr-2 text-xl">▶</span>
-                      {isWatched ? 'Watch Again' : 'Watch Now'}
-                    </a>
-                  </div>
-                </div>
+                {children}
               </div>
 
               <div className="flex-grow flex flex-col gap-3 lg:gap-4 text-base lg:text-lg">

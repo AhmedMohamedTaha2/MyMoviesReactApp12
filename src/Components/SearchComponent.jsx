@@ -16,7 +16,7 @@ function SearchComponent({ searchTerm, setSearchTerm }) {
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search movies..."
           className={`w-full pl-10 pr-12 py-3
-            bg-slate-500/10  {/* تم اختيار bg-slate-500/10 من النسخة الثانية كافتراض */}
+            bg-slate-950/70 
             text-gray-100
             placeholder-gray-400
             rounded-xl
@@ -27,7 +27,7 @@ function SearchComponent({ searchTerm, setSearchTerm }) {
             focus:ring-sky-500/20 {/* تم اختيار focus:ring-sky-500/20 من النسخة الثانية */}
             focus:outline-none
             transition-all duration-300
-            backdrop-blur-sm {/* تم اختيار backdrop-blur-sm من النسخة الثانية */}
+           
           `}
         />
         {searchTerm && (
