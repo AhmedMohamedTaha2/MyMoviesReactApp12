@@ -1,5 +1,5 @@
 // App.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 import {
@@ -33,6 +33,7 @@ function AppContent() {
   const [hoverRating, setHoverRating] = useState(0);
   const [userRating, setUserRating] = useState(0);
   const [watchedMovies, setWatchedMovies] = useState([]);
+  const formRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -102,18 +103,68 @@ function AppContent() {
   };
 
   // load watched movies from local state
-  useEffect(() =>
-    () => {
+  useEffect(
+    () => () => {
       const storedMovies = localStorage.getItem("watchedMovies");
       if (storedMovies) {
         setWatchedMovies(JSON.parse(storedMovies));
       }
+    },
+    []
+  );
+
+  useEffect(() => {
+    function isTextInput(element) {
+      if (!element) return false;
+      const tag = element.tagName;
+      const editable = element.isContentEditable;
+      return (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        editable ||
+        (element.getAttribute && element.getAttribute("role") === "textbox")
+      );
     }
-  , []);
-  
+
+    function handleKeyDown(e) {
+      const active = document.activeElement;
+      // Backspace: navigate(-1) if not in input/textarea/contentEditable
+      if (
+        e.key === "Backspace" &&
+        !isTextInput(active)
+      ) {
+        e.preventDefault();
+        navigate(-1);
+      }
+      // Escape: close modal if open
+      if (
+        e.key === "Escape" &&
+        isOpen
+      ) {
+        setIsOpen(false);
+      }
+      // Enter: submit form if focused in a form and form is ready
+      if (
+        e.key === "Enter" &&
+        formRef.current &&
+        formRef.current.contains(active)
+      ) {
+        // Only submit if not a textarea (to allow multiline)
+        if (active.tagName !== "TEXTAREA") {
+          const submitBtn = formRef.current.querySelector('button[type="submit"]:not(:disabled)');
+          if (submitBtn) {
+            submitBtn.click();
+          }
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate, isOpen]);
 
   return (
-    <div className="w-full min-h-screen bg-gray-950 ">
+    <div className="w-full min-h-screen bg-gray-950 font-sans ">
       <NavbarComponent setSearchTerm={setSearchTerm}>
         <SearchComponent
           searchTerm={searchTerm}

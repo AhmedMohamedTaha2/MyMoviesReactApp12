@@ -40,8 +40,8 @@ export default function ContainerComponent({
   }
 
   return (
-    <div className="container mx-auto px-4 py-2 flex flex-col items-center justify-center gap-5">
-      <div className="p-5 my-4 w-full text-center">
+    <div className="container mx-auto px-4 py-2 flex flex-col items-center justify-center gap-5 gap-4 my-12">
+      <div className="p-5 my-1 w-full text-center">
         <div className="flex flex-row items-end justify-center text-center gap-2 mb-10">
           <HiMiniArrowTurnLeftDown className="text-3xl text-white font-extrabold" />
           <h1 className="text-5xl font-extrabold">Your Search Result</h1>
@@ -51,7 +51,7 @@ export default function ContainerComponent({
         <div
           ref={containerRef}
           // تم اختيار هذا السطر
-          className="flex flex-wrap justify-center gap-4 h-[700px] overflow-y-auto overflow-x-hidden custom-scrollbar"
+          className="flex flex-wrap justify-center p-4 h-[700px] overflow-y-auto overflow-x-hidden custom-scrollbar"
         >
           {children}
         </div>
