@@ -73,7 +73,7 @@ const FooterComponent = () => {
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         <motion.div className="flex justify-center" variants={itemVariants}>
           <img
-            src="/public/Search.png"
+            src="../../public/Search.png"
             alt="Logo"
             className=" w-32 filter brightness-0 invert"
           />
