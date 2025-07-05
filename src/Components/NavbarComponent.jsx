@@ -1,7 +1,8 @@
 // components/NavbarComponent.jsx
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 // Using a mock Link for standalone demonstration
-const Link = ({ to, children, ...props }) => (
+const LinkMock = ({ to, children, ...props }) => (
   <a href={to} {...props}>
     {children}
   </a>
