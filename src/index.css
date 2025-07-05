@@ -81,3 +81,30 @@ body,
   margin: 0;
   padding: 0;
 }
+
+/* Custom Scrollbar Utilities */
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(14 165 233 / 0.5) rgb(30 41 59);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgb(30 41 59);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(14 165 233 / 0.5);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(14 165 233 / 0.8);
+  }
+}
